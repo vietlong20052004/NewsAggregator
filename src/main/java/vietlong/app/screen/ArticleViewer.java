@@ -8,13 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-import java.io.*;
 import java.net.*;
-import java.text.ParseException;
-
-import java.util.List;
-
-import static vietlong.app.article.JsonArticleReader.readFromDirectory;
 
 
 public class ArticleViewer extends JFrame {
@@ -24,7 +18,7 @@ public class ArticleViewer extends JFrame {
     private JLabel dateLabel;
     private JLabel authorLabel;
     private JLabel hashtagsLabel;
-    private JLabel categoryLabel;
+    private JLabel contentLabel;
     private JTextArea contentTextArea;
 
     public ArticleViewer(Article article){
@@ -48,7 +42,7 @@ public class ArticleViewer extends JFrame {
         dateLabel = new JLabel();
         authorLabel = new JLabel();
         hashtagsLabel = new JLabel();
-        categoryLabel = new JLabel();
+        contentLabel = new JLabel();
         contentTextArea = new JTextArea();
         contentTextArea.setLineWrap(true);
         contentTextArea.setWrapStyleWord(true);
@@ -64,7 +58,7 @@ public class ArticleViewer extends JFrame {
         mainPanel.add(Box.createVerticalStrut(10));
         mainPanel.add(hashtagsLabel);
         mainPanel.add(Box.createVerticalStrut(10));
-        mainPanel.add(categoryLabel);
+        mainPanel.add(contentLabel);
         mainPanel.add(Box.createVerticalStrut(10));
         mainPanel.add(new JScrollPane(contentTextArea));
         add(mainPanel);
@@ -97,10 +91,10 @@ public class ArticleViewer extends JFrame {
         titleLabel.setText("Title: " + article.getTitle());
         titleLabel.setForeground(Color.BLACK);
         titleLabel.setFont(new Font("Serif",Font.BOLD,25));
-        dateLabel.setText("Date: " + article.getFormattedCreationDate());
+        dateLabel.setText("Date: " + article.getPublishedDate().toString());
         authorLabel.setText("Author: " + String.join(", ", article.getAuthor()));
         hashtagsLabel.setText("Hashtags: " + String.join(", ", article.getHashtags()));
-        categoryLabel.setText("Category: " + (article.getCategory() != null ? String.join(", ", article.getCategory()) : ""));
+        contentLabel.setText("Content: " );
         contentTextArea.setText(article.getContent());
     }
 

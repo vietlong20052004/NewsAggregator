@@ -3,7 +3,6 @@ package vietlong.app.screen;
 
 
 import vietlong.app.article.Article;
-import vietlong.app.person.Edit;
 import vietlong.app.person.User;
 
 import javax.swing.*;
@@ -19,7 +18,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
-import static vietlong.app.article.JsonArticleReader.readFromDirectory;
+import static vietlong.app.article.JsonArticleReader.readFromFile;
 
 public class ArticleChooser extends JPanel {
     private final List<Article> articles;
@@ -135,7 +134,7 @@ public class ArticleChooser extends JPanel {
 
     private List<Article> loadArticles() {
         try {
-            return readFromDirectory("Data", "data_full.json");
+            return readFromFile("Data", "data_full.json");
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to load articles: " + e.getMessage());
@@ -189,7 +188,7 @@ public class ArticleChooser extends JPanel {
         JLabel authorLabel = new JLabel("Author: " + String.join(", ", article.getAuthor()));
         authorLabel.setFont(new Font("SansSerif", Font.ITALIC,14));
         authorLabel.setForeground(Color.DARK_GRAY);
-        JLabel dateLabel = new JLabel("Date: " + article.getFormattedCreationDate());
+        JLabel dateLabel = new JLabel("Date: " + article.getPublishedDate().toString());
         dateLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
         dateLabel.setForeground(Color.DARK_GRAY);
 

@@ -1,7 +1,10 @@
 package vietlong.app.screen;
 
+import com.sun.tools.javac.Main;
+import jdk.jfr.Category;
 import vietlong.app.article.Article;
 import vietlong.app.article.JsonArticleWriter;
+import vietlong.app.person.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,11 +20,17 @@ public class ArticleAdder extends JFrame {
     protected JTextField dateField;
     protected JTextField authorField;
     protected JTextField hashtagsField;
-    protected JTextField categoryField;
+    protected JTextField typeField;
+
     protected JTextArea contentTextArea;
     protected JButton saveButton;
+    protected SaveButtonListener saveButtonListener;
+    protected MainApplication mainApplication;
+    protected User user;
 
-    public ArticleAdder() {
+    public ArticleAdder(MainApplication mainApplication, User user) {
+        this.mainApplication = mainApplication;
+        this.user = user;
         setTitle("Add Article");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -41,21 +50,24 @@ public class ArticleAdder extends JFrame {
         dateField = new JTextField();
         authorField = new JTextField();
         hashtagsField = new JTextField();
-        categoryField = new JTextField();
+        typeField = new JTextField();
+
         contentTextArea = new JTextArea();
         contentTextArea.setLineWrap(true);
         contentTextArea.setWrapStyleWord(true);
+        saveButtonListener = new SaveButtonListener();
 
         mainPanel.add(createLabeledField("URL: ", urlField));
         mainPanel.add(createLabeledField("Title: ", titleField));
         mainPanel.add(createLabeledField("Date: ", dateField));
         mainPanel.add(createLabeledField("Author: ", authorField));
         mainPanel.add(createLabeledField("Hashtags: ", hashtagsField));
-        mainPanel.add(createLabeledField("Category: ", categoryField));
+
+        mainPanel.add(createLabeledField("Type ", typeField));
         mainPanel.add(createLabeledField("Content: ", new JScrollPane(contentTextArea)));
 
         JButton saveButton = new JButton("Save Article");
-        saveButton.addActionListener(new SaveButtonListener());
+        saveButton.addActionListener(saveButtonListener);
         mainPanel.add(saveButton);
 
         add(mainPanel);
@@ -65,7 +77,7 @@ public class ArticleAdder extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         JLabel label = new JLabel(labelText);
         label.setPreferredSize(new Dimension(100, 30));
-        field.setPreferredSize(new Dimension(600, 30));
+        field.setPreferredSize(new Dimension(700, 30));
         panel.add(label, BorderLayout.WEST);
         panel.add(field, BorderLayout.CENTER);
         panel.setMaximumSize(new Dimension(800, 40));
@@ -76,17 +88,23 @@ public class ArticleAdder extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             Article article = new Article();
-            article.setUrl(urlField.getText());
-            article.setTitle(titleField.getText());
+            article.setUrl(urlField.getText().trim());
+            article.setTitle(titleField.getText().trim());
             try {
-                article.setCreationDate(dateField.getText());
-            } catch (ParseException ex) {
-                throw new RuntimeException(ex);
+                article.setArticleType(Article.ArticleType.fromString(typeField.getText().trim()));
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(ArticleAdder.this, "Invalid article type: " + typeField.getText());
+                return;
             }
-            article.setAuthor(List.of(authorField.getText().split(",")));
-            article.setHashtags(List.of(hashtagsField.getText().split(",")));
-            article.setCategory(List.of(categoryField.getText().split(",")));
-            article.setContent(contentTextArea.getText());
+            try {
+                article.setPublishedDate(dateField.getText());
+            } catch (ParseException ex) {
+                JOptionPane.showMessageDialog(ArticleAdder.this, "Invalid date format. Please use yyyy-MM-dd.");
+                return;
+            }
+            article.setAuthor(List.of(authorField.getText().trim().split("\\s*,\\s*")));
+            article.setHashtags(List.of(hashtagsField.getText().trim().split("\\s*,\\s*")));
+            article.setContent(contentTextArea.getText().trim());
 
             try {
                 // Read existing articles from the file
@@ -96,14 +114,15 @@ public class ArticleAdder extends JFrame {
                 articles.add(article);
 
                 // Write updated list back to the file
-                JsonArticleWriter.writeToFile(articles, "src/main/java/Data", "data_full.json");
-
+                JsonArticleWriter.writeToFile(articles, "Data", "data_full.json");
                 JOptionPane.showMessageDialog(ArticleAdder.this, "Article added successfully!");
-                dispose();
+
             } catch (IOException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(ArticleAdder.this, "Failed to add article: " + ex.getMessage());
             }
+
+            mainApplication.showArticleChooser(user);
         }
     }
 }

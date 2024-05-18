@@ -1,11 +1,11 @@
 package vietlong.app.article;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 public class JsonArticleWriter {
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -17,7 +17,7 @@ public class JsonArticleWriter {
         }
 
         File file = new File(dir, fileName);
-        objectMapper.writeValue(file, articles);
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, articles);
     }
 
     public static List<Article> readFromFile(String directory, String fileName) throws IOException {
@@ -26,7 +26,7 @@ public class JsonArticleWriter {
             CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(List.class, Article.class);
             return objectMapper.readValue(file, listType);
         } else {
-            throw new IOException("File not found: " + file.getAbsolutePath());
+            return new ArrayList<>();
         }
     }
 }

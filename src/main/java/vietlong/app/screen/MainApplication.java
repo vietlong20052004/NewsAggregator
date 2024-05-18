@@ -39,6 +39,7 @@ public class MainApplication extends JFrame{
     }
 
     public void showArticleChooser(User user){
+        mainPanel.removeAll();
         ArticleChooser articleChooser = new ArticleChooser(this, user);
         mainPanel.add(articleChooser, "ArticleChooser");
         appLayout.show(mainPanel,"ArticleChooser");
@@ -64,7 +65,7 @@ public class MainApplication extends JFrame{
         // Add Article menu item
         if (user instanceof Edit) {
             JMenuItem addArticleMenuItem = new JMenuItem("Add Article");
-            addArticleMenuItem.addActionListener(e -> new ArticleAdder().setVisible(true));
+            addArticleMenuItem.addActionListener(e -> new ArticleAdder(this, user).setVisible(true));
             menu.add(addArticleMenuItem);
         }
 
@@ -82,6 +83,13 @@ public class MainApplication extends JFrame{
         return menuBar;
     }
 
+    public CardLayout getAppLayout() {
+        return appLayout;
+    }
+
+    public JPanel getMainPanel() {
+        return mainPanel;
+    }
 
     public Map<String, User> getUsers(){
         return users;

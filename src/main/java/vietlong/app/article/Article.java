@@ -8,6 +8,11 @@ package vietlong.app.article;
  *
  * @author SingPC
  */
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.text.ParseException;
 import java.util.Comparator;
 import java.util.List;
@@ -18,44 +23,37 @@ import static vietlong.app.search_engine.Preprocessing.tokenize;
 
 
 public class Article {
-    public static final Comparator<Article> COMPARE_BY_ID = new 
-        ArticleCompareById();
-    public static final Comparator<Article> COMPARE_BY_CREATION_DATE = new 
-        ArticleCompareByCreationDate();
-    
-    private static int articleCount = 0; 
-    private final int articleId; 
+
     private String url;
     private ArticleType articleType;
-    private String articleSummary; 
     private String title; 
-    private String content; 
-    private Date creationDate;
+    private String content;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date publishedDate;
     private List<String> hashtags;
     private List<String> author; 
     private List<String> category; 
 
     public Article(){
-        this.articleId = articleCount++;
+
     }
 
     public Article(
-            String url, 
-            String articleType, 
-            String title, 
-            String content, 
-            String creationDate, 
-            List<String> hashtags, 
-            List<String> author, 
-            List<String> category) throws ParseException {
-        
-        this.articleId = articleCount++;
+            @JsonProperty("url") String url,
+            @JsonProperty("type") String articleType,
+            @JsonProperty("title") String title,
+            @JsonProperty("content") String content,
+            @JsonProperty("publishedDate") String publishedDate,
+            @JsonProperty("hashtags") List<String> hashtags,
+            @JsonProperty("author") List<String> author,
+            @JsonProperty("category") List<String> category) throws ParseException {
+
         this.url = url;
         
-        this.articleType = convertToArticleType(articleType);
+        this.articleType = ArticleType.fromString(articleType);
         this.title = title;
         this.content = content;
-        this.creationDate = convertCreationDateTime(creationDate) ;
+        this.publishedDate = Article.convertPublishedDateTime(publishedDate) ;
         this.hashtags = hashtags;
         this.author = author;
         this.category = category;
@@ -63,9 +61,6 @@ public class Article {
         
     }
 
-    public int getArticleId() {
-        return articleId;
-    }
 
     public String getUrl() {
         return url;
@@ -85,8 +80,8 @@ public class Article {
         return content;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
+    public Date getPublishedDate() {
+        return publishedDate;
     }
 
     public List<String> getHashtags() {
@@ -101,9 +96,6 @@ public class Article {
         return category;
     }
 
-    public static void setArticleCount(int articleCount) {
-        Article.articleCount = articleCount;
-    }
 
     public void setUrl(String url) {
         this.url = url;
@@ -114,9 +106,7 @@ public class Article {
         this.articleType = articleType;
     }
 
-    public void setArticleSummary(String articleSummary) {
-        this.articleSummary = articleSummary;
-    }
+
 
     public void setTitle(String title) {
         this.title = title;
@@ -126,8 +116,8 @@ public class Article {
         this.content = content;
     }
 
-    public void setCreationDate(String creationDate) throws ParseException {
-        this.creationDate = convertCreationDateTime(creationDate);
+    public void setPublishedDate(String publishedDate) throws ParseException {
+        this.publishedDate = Article.convertPublishedDateTime(publishedDate);
     }
 
     public void setHashtags(List<String> hashtags) {
@@ -142,39 +132,29 @@ public class Article {
         this.category = category;
     }
     
-    private ArticleType convertToArticleType(String type){
-        switch (type.toUpperCase().trim()) {
-            case "NEWS" -> {
-                return ArticleType.NEWS;
-            }
-            case "TWEET" -> {
-                return ArticleType.TWEET;
-            }
-            case "BLOG_POST" -> {
-                return ArticleType.BLOG_POST;
-            }
-            case "FACEBOOK_POST" -> {
-                return ArticleType.FACEBOOK_POST;
-            }
-            default -> throw new IllegalArgumentException("Invalid article type: " + type);
-        }
-    }
+
     
-    public Date convertCreationDateTime(String creationDateTime) throws ParseException{
+    public static Date convertPublishedDateTime(String publishedDateTime) throws ParseException{
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.parse(creationDateTime);
+        return sdf.parse(publishedDateTime.trim());
     }
-    
-    public String getFormattedCreationDate(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(this.creationDate);
-    }
+
     
     public enum ArticleType{
         TWEET,
         NEWS,
         BLOG_POST,
-        FACEBOOK_POST,
+        FACEBOOK_POST;
+
+        @JsonCreator
+        public static ArticleType fromString(String key) {
+            return key == null ? null : ArticleType.valueOf(key.toUpperCase());
+        }
+
+        @JsonValue
+        public String toValue() {
+            return this.name().toLowerCase();
+        }
     }
     
     @Override
@@ -183,7 +163,7 @@ public class Article {
                 "url='" + url + '\'' +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", creationDateTime=" + getFormattedCreationDate() +
+                ", creationDateTime=" + publishedDate +
                 ", hashtag=" + hashtags +
                 ", author=" + author +
                 ", category=" + category +

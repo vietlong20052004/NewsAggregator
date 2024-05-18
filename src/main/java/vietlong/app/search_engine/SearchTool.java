@@ -38,7 +38,5 @@ public class SearchTool {
                 .collect(Collectors.toList());
     }
 
-    private boolean tokenizeAndSearch(List<String> tokens, String keyword) {
-        return tokens.contains(keyword.toLowerCase());
-    }
+
 }

@@ -12,12 +12,12 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 
-import static vietlong.app.article.JsonArticleReader.readFromDirectory;
+import static vietlong.app.article.JsonArticleReader.readFromFile;
 
 public class SearchToolTest {
     public static void main(String[] args) throws ParseException, IOException {
         // Tạo danh sách các bài viết mẫu
-        List<Article> articles = readFromDirectory("Data", "data_full.json");
+        List<Article> articles = readFromFile("Data", "data_full.json");
         // Tạo đối tượng SearchTool
         SearchTool searchTool = new SearchTool();
 

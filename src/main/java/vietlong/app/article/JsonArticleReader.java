@@ -13,7 +13,7 @@ import java.util.List;
 
 public class JsonArticleReader {
     
-    public static List<Article> readFromDirectory(String directoryPath, String fileName) throws ParseException, IOException {
+    public static List<Article> readFromFile(String directoryPath, String fileName) throws ParseException, IOException {
         ObjectMapper mapper = new ObjectMapper();
 
 
@@ -27,26 +27,8 @@ public class JsonArticleReader {
         byte[] jsonData = Files.readAllBytes(file.toPath());
         String jsonString = new String(jsonData, StandardCharsets.UTF_8);
 
-            // Read JSON file and convert to list of articles
-        ParsedArticle[] articles = mapper.readValue(jsonString, ParsedArticle[].class);
-        List<Article> listArticle = new ArrayList<>();
-            // Print the articles
-        for (ParsedArticle article : articles) {
-            Article convertedArticle = new Article(
-                       article.getUrl(),
-                       article.getType(),
-                       article.getTitle(),
-                       article.getContent(),
-                       article.getPublishDate(),
-                       article.getHashtags(),
-                       article.getAuthor(),
-                       article.getCategory()
-                );
-            listArticle.add(convertedArticle);
-            }
-
-
-        return listArticle;
+        // Read JSON file and convert to list of articles
+        return List.of(mapper.readValue(jsonString, Article[].class));
     }
     }
 
