@@ -3,13 +3,12 @@ package vietlong.app.person;
 public class User {
     private final String username;
     private final String password;
-    private final boolean isAdmin;
+
     private final String name;
 
-    public User(String username, String password, boolean isAdmin, String name) {
+    public User(String username, String password, String name) {
         this.username = username;
         this.password = password;
-        this.isAdmin = isAdmin;
         this.name = name;
     }
 
@@ -21,7 +20,7 @@ public class User {
         return password;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public String getName() {
+        return name;
     }
 }

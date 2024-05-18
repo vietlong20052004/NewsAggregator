@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package vietlong.app.article;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,10 +11,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author SingPC
- */
 public class JsonArticleReader {
     
     public static List<Article> readFromDirectory(String directoryPath, String fileName) throws ParseException, IOException {

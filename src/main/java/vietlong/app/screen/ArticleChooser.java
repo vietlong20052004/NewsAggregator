@@ -3,6 +3,7 @@ package vietlong.app.screen;
 
 
 import vietlong.app.article.Article;
+import vietlong.app.person.Edit;
 import vietlong.app.person.User;
 
 import javax.swing.*;
@@ -24,6 +25,7 @@ public class ArticleChooser extends JPanel {
     private final List<Article> articles;
     private int currentPage = 0;
     private final int articlesPerPage = 5;
+    private final MainApplication mainApp;
     private final User user;
 
     private JPanel articlePanel;
@@ -32,15 +34,17 @@ public class ArticleChooser extends JPanel {
     private JTextField currentPageField;
     private JLabel totalPagesLabel;
 
-    public ArticleChooser(User user) {
+    public ArticleChooser(MainApplication mainApp, User user) {
+        this.mainApp = mainApp;
         this.user = user;
-       setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
 
         // Load articles from JSON file
         articles = loadArticles();
 
         // Initialize components
         initializeComponents();
+
         updateArticles();
     }
 
@@ -66,6 +70,7 @@ public class ArticleChooser extends JPanel {
         backgroundPanel.add(controlPanel, BorderLayout.SOUTH);
 
     }
+
 
     private JPanel createControlPanel(){
         JPanel controlPanel = new JPanel();
@@ -213,7 +218,4 @@ public class ArticleChooser extends JPanel {
 
         return articleItem;
     }
-
-
-
 }

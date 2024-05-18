@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-  
+import static vietlong.app.search_engine.Preprocessing.tokenize;
+
+
 public class Article {
     public static final Comparator<Article> COMPARE_BY_ID = new 
         ArticleCompareById();
@@ -32,6 +34,10 @@ public class Article {
     private List<String> hashtags;
     private List<String> author; 
     private List<String> category; 
+
+    public Article(){
+        this.articleId = articleCount++;
+    }
 
     public Article(
             String url, 
@@ -53,6 +59,7 @@ public class Article {
         this.hashtags = hashtags;
         this.author = author;
         this.category = category;
+
         
     }
 
@@ -153,8 +160,7 @@ public class Article {
         }
     }
     
-    private Date convertCreationDateTime(String creationDateTime) throws ParseException{
-//        SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy hh:mm a");
+    public Date convertCreationDateTime(String creationDateTime) throws ParseException{
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.parse(creationDateTime);
     }
@@ -183,6 +189,14 @@ public class Article {
                 ", category=" + category +
                 ", type=" + articleType +
                 '}';
+    }
+
+    public List<String> tokenizeTitle() {
+        return tokenize(this.title);
+    }
+
+    public List<String> tokenizeContent() {
+        return tokenize(this.content);
     }
     
     
