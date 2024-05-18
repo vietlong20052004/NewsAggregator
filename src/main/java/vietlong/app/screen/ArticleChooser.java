@@ -32,6 +32,7 @@ public class ArticleChooser extends JPanel {
     private JButton prevButton;
     private JTextField currentPageField;
     private JLabel totalPagesLabel;
+    private boolean editMode = false;
 
     public ArticleChooser(MainApplication mainApp, User user) {
         this.mainApp = mainApp;
@@ -188,7 +189,7 @@ public class ArticleChooser extends JPanel {
         JLabel authorLabel = new JLabel("Author: " + String.join(", ", article.getAuthor()));
         authorLabel.setFont(new Font("SansSerif", Font.ITALIC,14));
         authorLabel.setForeground(Color.DARK_GRAY);
-        JLabel dateLabel = new JLabel("Date: " + article.getPublishedDate().toString());
+        JLabel dateLabel = new JLabel("Date: " + article.convertToFormattedDate());
         dateLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
         dateLabel.setForeground(Color.DARK_GRAY);
 
@@ -196,25 +197,56 @@ public class ArticleChooser extends JPanel {
         articleItem.add(authorLabel);
         articleItem.add(dateLabel);
 
-        articleItem.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                SwingUtilities.invokeLater(() -> new ArticleViewer(article).setVisible(true));
-            }
-            @Override
-            public void mouseEntered(MouseEvent e){
-                articleItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-                articleItem.setBackground(new Color(230,250,250));
-            }
-            @Override
-            public void mouseExited(MouseEvent e){
-                articleItem.setCursor(Cursor.getDefaultCursor());
-                articleItem.setBackground(Color.CYAN);
-            }
+        if (editMode){
+            articleItem.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    SwingUtilities.invokeLater(() -> new ArticleEditor(mainApp, user, articles, article).setVisible(true));
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    articleItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                    articleItem.setBackground(Color.PINK);
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    articleItem.setCursor(Cursor.getDefaultCursor());
+                    articleItem.setBackground(Color.CYAN);
+                }
+            });
+        } else {
+            articleItem.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    SwingUtilities.invokeLater(() -> new ArticleViewer(article).setVisible(true));
+                }
+                @Override
+                public void mouseEntered(MouseEvent e){
+                    articleItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                    articleItem.setBackground(new Color(230,250,250));
+                }
+                @Override
+                public void mouseExited(MouseEvent e){
+                    articleItem.setCursor(Cursor.getDefaultCursor());
+                    articleItem.setBackground(Color.CYAN);
+                }
 
 
-        });
+            });
+        }
+
 
         return articleItem;
+    }
+
+    public void toggleEditMode(){
+        editMode = !editMode;
+        updateArticles();
+    }
+
+    public boolean isEditMode() {
+        return editMode;
     }
 }

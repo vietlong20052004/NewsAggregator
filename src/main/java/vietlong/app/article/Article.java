@@ -139,6 +139,11 @@ public class Article {
         return sdf.parse(publishedDateTime.trim());
     }
 
+    public String convertToFormattedDate(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(this.publishedDate);
+    }
+
     
     public enum ArticleType{
         TWEET,
@@ -152,9 +157,10 @@ public class Article {
         }
 
         @JsonValue
-        public String toValue() {
-            return this.name().toLowerCase();
+        public String toString() {
+            return this.name();
         }
+
     }
     
     @Override

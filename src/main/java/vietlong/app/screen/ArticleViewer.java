@@ -19,6 +19,7 @@ public class ArticleViewer extends JFrame {
     private JLabel authorLabel;
     private JLabel hashtagsLabel;
     private JLabel contentLabel;
+    private JLabel articleTypeLabel;
     private JTextArea contentTextArea;
 
     public ArticleViewer(Article article){
@@ -42,6 +43,7 @@ public class ArticleViewer extends JFrame {
         dateLabel = new JLabel();
         authorLabel = new JLabel();
         hashtagsLabel = new JLabel();
+        articleTypeLabel = new JLabel();
         contentLabel = new JLabel();
         contentTextArea = new JTextArea();
         contentTextArea.setLineWrap(true);
@@ -57,6 +59,8 @@ public class ArticleViewer extends JFrame {
         mainPanel.add(authorLabel);
         mainPanel.add(Box.createVerticalStrut(10));
         mainPanel.add(hashtagsLabel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(articleTypeLabel);
         mainPanel.add(Box.createVerticalStrut(10));
         mainPanel.add(contentLabel);
         mainPanel.add(Box.createVerticalStrut(10));
@@ -91,9 +95,10 @@ public class ArticleViewer extends JFrame {
         titleLabel.setText("Title: " + article.getTitle());
         titleLabel.setForeground(Color.BLACK);
         titleLabel.setFont(new Font("Serif",Font.BOLD,25));
-        dateLabel.setText("Date: " + article.getPublishedDate().toString());
+        dateLabel.setText("Date: " + article.convertToFormattedDate());
         authorLabel.setText("Author: " + String.join(", ", article.getAuthor()));
         hashtagsLabel.setText("Hashtags: " + String.join(", ", article.getHashtags()));
+        articleTypeLabel.setText("Type: "+ article.getArticleType());
         contentLabel.setText("Content: " );
         contentTextArea.setText(article.getContent());
     }

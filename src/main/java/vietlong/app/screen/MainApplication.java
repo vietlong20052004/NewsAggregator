@@ -15,7 +15,8 @@ public class MainApplication extends JFrame{
     private final CardLayout appLayout;
     private final JPanel mainPanel;
     private final Map<String, User> users;
-
+    private ArticleChooser articleChooser;
+    private boolean editMode;
 
     public MainApplication(){
         setTitle("Main Application");
@@ -40,7 +41,7 @@ public class MainApplication extends JFrame{
 
     public void showArticleChooser(User user){
         mainPanel.removeAll();
-        ArticleChooser articleChooser = new ArticleChooser(this, user);
+        this.articleChooser = new ArticleChooser(this, user);
         mainPanel.add(articleChooser, "ArticleChooser");
         appLayout.show(mainPanel,"ArticleChooser");
         setJMenuBar(createMenuBar(user));
@@ -67,6 +68,25 @@ public class MainApplication extends JFrame{
             JMenuItem addArticleMenuItem = new JMenuItem("Add Article");
             addArticleMenuItem.addActionListener(e -> new ArticleAdder(this, user).setVisible(true));
             menu.add(addArticleMenuItem);
+            JMenuItem editModeMenuItem = new JMenuItem("Edit Mode");
+            this.editMode = false;
+
+            editModeMenuItem.addActionListener(e -> {
+                if (!articleChooser.isEditMode()) {
+                    editModeMenuItem.setText("Exit Edit Mode");
+                    articleChooser.toggleEditMode();
+                    this.editMode = !this.editMode;
+                    editModeMenuItem.revalidate();
+                }  else {
+                    editModeMenuItem.setText("Edit Mode");
+                    articleChooser.toggleEditMode();
+                    this.editMode = !this.editMode;
+                    editModeMenuItem.revalidate();
+                    }}
+            );
+            menu.add(editModeMenuItem);
+            menu.revalidate();
+
         }
 
         // Logout menu item

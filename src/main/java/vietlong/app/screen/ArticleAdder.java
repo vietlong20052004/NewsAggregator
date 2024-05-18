@@ -15,12 +15,14 @@ import java.text.ParseException;
 import java.util.List;
 
 public class ArticleAdder extends JFrame {
+
+    protected  JPanel mainPanel;
     protected JTextField urlField;
     protected JTextField titleField;
     protected JTextField dateField;
     protected JTextField authorField;
     protected JTextField hashtagsField;
-    protected JTextField typeField;
+    protected JComboBox<String> typeField;
 
     protected JTextArea contentTextArea;
     protected JButton saveButton;
@@ -41,7 +43,7 @@ public class ArticleAdder extends JFrame {
     }
 
     public void initializeComponents(){
-        JPanel mainPanel = new BackgroundPanel("ImageIcon/background.jpg");
+        this.mainPanel = new BackgroundPanel("ImageIcon/background.jpg");
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -50,37 +52,38 @@ public class ArticleAdder extends JFrame {
         dateField = new JTextField();
         authorField = new JTextField();
         hashtagsField = new JTextField();
-        typeField = new JTextField();
+        typeField = new JComboBox<>(new String[]{"Tweet", "News", "Blog_Post", "Facebook_Post"});
 
         contentTextArea = new JTextArea();
         contentTextArea.setLineWrap(true);
         contentTextArea.setWrapStyleWord(true);
+        contentTextArea.setPreferredSize(new Dimension(700, 400));
         saveButtonListener = new SaveButtonListener();
 
-        mainPanel.add(createLabeledField("URL: ", urlField));
-        mainPanel.add(createLabeledField("Title: ", titleField));
-        mainPanel.add(createLabeledField("Date: ", dateField));
-        mainPanel.add(createLabeledField("Author: ", authorField));
-        mainPanel.add(createLabeledField("Hashtags: ", hashtagsField));
+        mainPanel.add(createLabeledField("URL: ", urlField, new Dimension(800,30), new Dimension(900,40)));
+        mainPanel.add(createLabeledField("Title: ", titleField, new Dimension(800,30), new Dimension(900,40)));
+        mainPanel.add(createLabeledField("Date: ", dateField, new Dimension(800,30), new Dimension(900,40)));
+        mainPanel.add(createLabeledField("Author: ", authorField, new Dimension(800,30), new Dimension(900,40)));
+        mainPanel.add(createLabeledField("Hashtags: ", hashtagsField, new Dimension(800,30), new Dimension(900,40)));
+        mainPanel.add(createLabeledField("Type ", typeField, new Dimension(800,30), new Dimension(900,40)));
+        mainPanel.add(createLabeledField("Content: ", new JScrollPane(contentTextArea), new Dimension(800,350), new Dimension(900,400)));
 
-        mainPanel.add(createLabeledField("Type ", typeField));
-        mainPanel.add(createLabeledField("Content: ", new JScrollPane(contentTextArea)));
-
-        JButton saveButton = new JButton("Save Article");
+        this.saveButton = new JButton("Save Article");
         saveButton.addActionListener(saveButtonListener);
         mainPanel.add(saveButton);
 
         add(mainPanel);
     }
 
-    private JPanel createLabeledField(String labelText, JComponent field) {
+    private JPanel createLabeledField(String labelText, JComponent field,Dimension fieldSize, Dimension panelSize) {
         JPanel panel = new JPanel(new BorderLayout());
         JLabel label = new JLabel(labelText);
+        label.setOpaque(true);
         label.setPreferredSize(new Dimension(100, 30));
-        field.setPreferredSize(new Dimension(700, 30));
+        field.setPreferredSize(fieldSize);
         panel.add(label, BorderLayout.WEST);
         panel.add(field, BorderLayout.CENTER);
-        panel.setMaximumSize(new Dimension(800, 40));
+        panel.setMaximumSize(panelSize);
         return panel;
     }
 
@@ -91,9 +94,9 @@ public class ArticleAdder extends JFrame {
             article.setUrl(urlField.getText().trim());
             article.setTitle(titleField.getText().trim());
             try {
-                article.setArticleType(Article.ArticleType.fromString(typeField.getText().trim()));
+                article.setArticleType(Article.ArticleType.fromString((String)typeField.getSelectedItem()));
             } catch (IllegalArgumentException ex) {
-                JOptionPane.showMessageDialog(ArticleAdder.this, "Invalid article type: " + typeField.getText());
+                JOptionPane.showMessageDialog(ArticleAdder.this, "Invalid article type: " + typeField.getSelectedItem());
                 return;
             }
             try {
@@ -115,11 +118,11 @@ public class ArticleAdder extends JFrame {
 
                 // Write updated list back to the file
                 JsonArticleWriter.writeToFile(articles, "Data", "data_full.json");
-                JOptionPane.showMessageDialog(ArticleAdder.this, "Article added successfully!");
+                JOptionPane.showMessageDialog(ArticleAdder.this, "Article saved successfully!");
 
             } catch (IOException ex) {
                 ex.printStackTrace();
-                JOptionPane.showMessageDialog(ArticleAdder.this, "Failed to add article: " + ex.getMessage());
+                JOptionPane.showMessageDialog(ArticleAdder.this, "Failed to save article: " + ex.getMessage());
             }
 
             mainApplication.showArticleChooser(user);
