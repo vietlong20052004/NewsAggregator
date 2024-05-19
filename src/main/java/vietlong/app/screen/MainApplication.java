@@ -14,20 +14,16 @@ import java.util.Map;
 public class MainApplication extends JFrame{
     private final CardLayout appLayout;
     private final JPanel mainPanel;
-    private final Map<String, User> users;
+    private Map<String, User> users;
     private ArticleChooser articleChooser;
     private boolean editMode;
 
-    public MainApplication(){
+    public MainApplication(Map<String, User> users){
+
         setTitle("Main Application");
-        setSize(800, 900);
+        setSize(900, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
-        // Initialize users
-        users = new HashMap<>();
-        users.put("longnv", new Author("longnv", "123",  "Long"));
-        users.put("dungnt", new User("dungnt", "123", "Dung"));
 
         // Set up layout
         appLayout = new CardLayout();
@@ -37,6 +33,9 @@ public class MainApplication extends JFrame{
         // Add login screen
         showLoginScreen();
         setVisible(true);
+
+        // Get users
+        this.users = users;
     }
 
     public void showArticleChooser(User user){
@@ -103,21 +102,12 @@ public class MainApplication extends JFrame{
         return menuBar;
     }
 
-    public CardLayout getAppLayout() {
-        return appLayout;
-    }
-
-    public JPanel getMainPanel() {
-        return mainPanel;
-    }
 
     public Map<String, User> getUsers(){
         return users;
     }
 
-    public static void main(String[] args){
-        SwingUtilities.invokeLater(()-> new MainApplication());
-    }
+
 }
 
 

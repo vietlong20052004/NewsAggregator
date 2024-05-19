@@ -78,7 +78,7 @@ public class ArticleAdder extends JFrame {
     private JPanel createLabeledField(String labelText, JComponent field,Dimension fieldSize, Dimension panelSize) {
         JPanel panel = new JPanel(new BorderLayout());
         JLabel label = new JLabel(labelText);
-        label.setOpaque(true);
+        label.setOpaque(false);
         label.setPreferredSize(new Dimension(100, 30));
         field.setPreferredSize(fieldSize);
         panel.add(label, BorderLayout.WEST);

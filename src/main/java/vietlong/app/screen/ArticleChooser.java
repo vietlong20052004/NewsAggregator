@@ -46,7 +46,6 @@ public class ArticleChooser extends JPanel {
         // Load articles from JSON file
         articles = loadArticles();
 
-
         // Initialize components
         initializeComponents();
 
@@ -56,24 +55,30 @@ public class ArticleChooser extends JPanel {
     private void initializeComponents(){
         // Add background
         BackgroundPanel backgroundPanel = new BackgroundPanel("ImageIcon/background.jpg");
-        backgroundPanel.setLayout(null);
+        backgroundPanel.setLayout(new BorderLayout());
         add(backgroundPanel, BorderLayout.CENTER);
 
         // Add search panel
         SearchBar searchPanel = new SearchBar(this, articles);
-        add(searchPanel, BorderLayout.NORTH);
+        searchPanel.setOpaque(false);
+        backgroundPanel.add(searchPanel, BorderLayout.NORTH);
 
 
-        articlePanel = new JPanel();
-        articlePanel.setOpaque(false);
-        articlePanel.setLayout(new BoxLayout(articlePanel, BoxLayout.Y_AXIS));
+
+
+        articlePanel = new JPanel(new BorderLayout());
         articlePanel.setBorder(new EmptyBorder(10, 30, 10, 30));
+        articlePanel.setOpaque(false);
 
         JScrollPane scrollPane = new JScrollPane(articlePanel);
         scrollPane.setBounds(30, 20, 650, 130*articlesPerPage);
         scrollPane.setOpaque(false);
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0,0));
         backgroundPanel.add(scrollPane, BorderLayout.CENTER);
+
 
         JPanel controlPanel = createControlPanel();
         controlPanel.setBounds(30, 130*articlesPerPage +20, 600, 40);
@@ -161,15 +166,17 @@ public class ArticleChooser extends JPanel {
         int start = currentPage * articlesPerPage;
         int end = Math.min(start + articlesPerPage, articles.size());
 
-
+        Box articleContainer = Box.createVerticalBox();
         for (int i = start; i < end; i++) {
             Article article = articles.get(i);
             JPanel articleItem = createArticleItem(article);
 
-            articlePanel.add(articleItem);
-            articlePanel.add(Box.createVerticalStrut(5)); // Add spacing between articles
-
+            articleItem.setAlignmentX(Component.CENTER_ALIGNMENT);
+            articleContainer.add(articleItem);
+            articleContainer.add(Box.createVerticalStrut(10));
         }
+
+        articlePanel.add(articleContainer, BorderLayout.CENTER);
 
         articlePanel.revalidate();
         articlePanel.repaint();

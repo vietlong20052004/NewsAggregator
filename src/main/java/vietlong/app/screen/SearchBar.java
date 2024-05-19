@@ -7,8 +7,7 @@ import vietlong.app.search_engine.SortArticleByDate;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +35,7 @@ public class SearchBar extends JPanel{
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
+        panel.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
@@ -57,6 +57,7 @@ public class SearchBar extends JPanel{
         gbc.gridx = 0;
         for (String label : criteriaLabels) {
             JCheckBox checkBox = new JCheckBox(label);
+            checkBox.setOpaque(false);
             criteriaCheckboxes.add(checkBox);
             gbc.gridwidth = 2;
             gbc.gridx += 2;
@@ -77,12 +78,7 @@ public class SearchBar extends JPanel{
         panel.add(sortComboBox, gbc);
 
         this.searchButton = new JButton("Search");
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                performSearch();
-            }
-        });
+        searchButton.addMouseListener(new SearchButtonListener());
         gbc.gridwidth = 4;
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -90,6 +86,8 @@ public class SearchBar extends JPanel{
         panel.add(searchButton, gbc);
 
         add(panel);
+
+
 
 
     }
@@ -124,6 +122,25 @@ public class SearchBar extends JPanel{
                 SortArticleByDate.sortByTime(searchResults, false);
             }
             articleChooser.displaySearchResults(searchResults);
+        }
+    }
+
+    private class SearchButtonListener extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e){
+            performSearch();
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e){
+            searchButton.setBackground(Color.cyan);
+            searchButton.setForeground(Color.BLUE);
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e ){
+            searchButton.setBackground(UIManager.getColor("Button.background"));
+            searchButton.setForeground(UIManager.getColor("Button.foreground"));
         }
     }
 
