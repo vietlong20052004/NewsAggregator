@@ -33,7 +33,7 @@ public class ArticleViewer extends JFrame {
     }
 
     private void initializeComponents(Article article){
-        mainPanel = new BackgroundPanel("ImageIcon/background.jpg");
+        mainPanel = new BackgroundPanel("ImageIcon/background_2.jpg");
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 

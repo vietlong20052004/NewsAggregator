@@ -26,6 +26,7 @@ public class MainApplication extends JFrame{
         setLocationRelativeTo(null);
         setFullScreen();
 
+
         // Set up layout
         appLayout = new CardLayout();
         mainPanel = new JPanel(appLayout);

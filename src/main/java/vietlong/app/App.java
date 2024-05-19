@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RunApp {
+public class App {
     public static void main(String[] args) {
         // Initialize users
         Map<String, User> users = new HashMap<>();
