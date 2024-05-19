@@ -48,7 +48,6 @@ public class ArticleEditor extends ArticleAdder {
         hashtagsField.setText(String.join(",", articleToEdit.getHashtags()));
         typeField.setSelectedItem(articleToEdit.getArticleType() != null ? articleToEdit.getArticleType() : "");
         contentTextArea.setText(articleToEdit.getContent());
-
     }
     private class SaveButtonListener implements ActionListener {
         @Override

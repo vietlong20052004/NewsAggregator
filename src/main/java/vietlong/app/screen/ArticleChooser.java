@@ -27,7 +27,7 @@ public class ArticleChooser extends JPanel {
     private List<Article> articles;
     private List<Article> searchResults;
     private int currentPage = 0;
-    private final int articlesPerPage = 5;
+    private final int articlesPerPage =5;
     private final MainApplication mainApp;
     private final User user;
 
@@ -37,6 +37,7 @@ public class ArticleChooser extends JPanel {
     private JTextField currentPageField;
     private JLabel totalPagesLabel;
     private boolean editMode = false;
+
 
     public ArticleChooser(MainApplication mainApp, User user) {
         this.mainApp = mainApp;
@@ -66,12 +67,12 @@ public class ArticleChooser extends JPanel {
 
 
 
-        articlePanel = new JPanel(new BorderLayout());
+        articlePanel = new JPanel();
+        articlePanel.setLayout(new BoxLayout(articlePanel, BoxLayout.Y_AXIS));
         articlePanel.setBorder(new EmptyBorder(10, 30, 10, 30));
         articlePanel.setOpaque(false);
 
         JScrollPane scrollPane = new JScrollPane(articlePanel);
-        scrollPane.setBounds(30, 20, 650, 130*articlesPerPage);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -81,7 +82,6 @@ public class ArticleChooser extends JPanel {
 
 
         JPanel controlPanel = createControlPanel();
-        controlPanel.setBounds(30, 130*articlesPerPage +20, 600, 40);
         backgroundPanel.add(controlPanel, BorderLayout.SOUTH);
 
     }
@@ -162,7 +162,6 @@ public class ArticleChooser extends JPanel {
 
     private void updateArticles() {
         articlePanel.removeAll();
-
         int start = currentPage * articlesPerPage;
         int end = Math.min(start + articlesPerPage, articles.size());
 
@@ -172,11 +171,12 @@ public class ArticleChooser extends JPanel {
             JPanel articleItem = createArticleItem(article);
 
             articleItem.setAlignmentX(Component.CENTER_ALIGNMENT);
+
             articleContainer.add(articleItem);
             articleContainer.add(Box.createVerticalStrut(10));
         }
-
-        articlePanel.add(articleContainer, BorderLayout.CENTER);
+        articleContainer.add(Box.createVerticalGlue());
+        articlePanel.add(articleContainer);
 
         articlePanel.revalidate();
         articlePanel.repaint();
@@ -196,23 +196,39 @@ public class ArticleChooser extends JPanel {
         articleItem.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(Color.GRAY, 4,true),
                 new EmptyBorder(10, 10, 10, 10)));
-        articleItem.setMaximumSize(new Dimension(600, 100));
+        articleItem.setPreferredSize(new Dimension(800, 100));
         articleItem.setBackground(Color.cyan);
-        JLabel titleLabel = new JLabel("Title: " + article.getTitle());
-        titleLabel.setFont(new Font("Serif", Font.BOLD, 18));
-        titleLabel.setForeground(Color.DARK_GRAY);
 
+        String titleText = article.getTitle();
+        JLabel titleLabel = new JLabel("Title: " + titleText );
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 16));
+        titleLabel.setForeground(Color.DARK_GRAY);
+        titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel authorLabel = new JLabel("Author: " + String.join(", ", article.getAuthor()));
         authorLabel.setFont(new Font("SansSerif", Font.ITALIC,14));
         authorLabel.setForeground(Color.DARK_GRAY);
+        authorLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         JLabel dateLabel = new JLabel("Date: " + article.convertToFormattedDate());
         dateLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
         dateLabel.setForeground(Color.DARK_GRAY);
+        dateLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        String hashtagsText = String.join(", #", article.getHashtags());
+        if (hashtagsText.length() > 120) {
+            hashtagsText = hashtagsText.substring(0, 120) + "...";
+        }
+        JLabel hashtagsLabel = new JLabel("<html><div style='width: 750px;'>Hashtags: #" + hashtagsText + "</div></html>");
+        hashtagsLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
+        hashtagsLabel.setForeground(Color.DARK_GRAY);
+        hashtagsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        hashtagsLabel.setMaximumSize(new Dimension(700,25));
 
         articleItem.add(titleLabel);
         articleItem.add(authorLabel);
         articleItem.add(dateLabel);
+        articleItem.add(hashtagsLabel);
 
         if (editMode){
             articleItem.addMouseListener(new MouseAdapter() {

@@ -24,6 +24,7 @@ public class MainApplication extends JFrame{
         setSize(900, 900);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setFullScreen();
 
         // Set up layout
         appLayout = new CardLayout();
@@ -100,6 +101,16 @@ public class MainApplication extends JFrame{
 
         menuBar.add(menu);
         return menuBar;
+    }
+
+    private void setFullScreen() {
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setResizable(true);  // Allow resizing
+
+        // Adjust size and location
+//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//        setSize(screenSize);
+        setLocationRelativeTo(null);
     }
 
 
