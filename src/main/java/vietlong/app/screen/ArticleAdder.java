@@ -84,6 +84,7 @@ public class ArticleAdder extends JFrame {
         panel.add(label, BorderLayout.WEST);
         panel.add(field, BorderLayout.CENTER);
         panel.setMaximumSize(panelSize);
+        panel.setOpaque(false);
         return panel;
     }
 
