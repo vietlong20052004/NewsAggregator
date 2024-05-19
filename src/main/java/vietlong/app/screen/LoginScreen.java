@@ -9,19 +9,22 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class LoginScreen extends JPanel{
+    private final BackgroundPanel mainPanel;
     private JTextField usernameField;
     private JPasswordField passwordField;
     private final MainApplication mainApp;
-
+    private ImageIcon loginImage;
 
     public LoginScreen(MainApplication mainApp){
-
+        this.mainPanel = new BackgroundPanel("ImageIcon/4.png");
         this.mainApp = mainApp;
+        mainApp.add(mainPanel);
         initializeComponents();
+
     }
 
     private void initializeComponents(){
-        setLayout(new GridBagLayout());
+        mainPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10); // Add padding around components
 
@@ -36,7 +39,7 @@ public class LoginScreen extends JPanel{
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
-        add(usernameLabel, gbc);
+        mainPanel.add(usernameLabel, gbc);
 
         // Username Field
         usernameField = new JTextField(15);
@@ -44,7 +47,7 @@ public class LoginScreen extends JPanel{
         usernameField.setPreferredSize(new Dimension(200, 30));
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        add(usernameField, gbc);
+        mainPanel.add(usernameField, gbc);
 
         // Password Label
         JLabel passwordLabel = new JLabel("Password:");
@@ -52,7 +55,7 @@ public class LoginScreen extends JPanel{
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.EAST;
-        add(passwordLabel, gbc);
+        mainPanel.add(passwordLabel, gbc);
 
         // Password Field
         passwordField = new JPasswordField(15);
@@ -60,7 +63,7 @@ public class LoginScreen extends JPanel{
         passwordField.setPreferredSize(new Dimension(200, 30));
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        add(passwordField, gbc);
+        mainPanel.add(passwordField, gbc);
 
         // Login Button
         JButton loginButton = new JButton("Login");
@@ -70,7 +73,7 @@ public class LoginScreen extends JPanel{
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         loginButton.addActionListener(new LoginButtonListener());
-        add(loginButton, gbc);
+        mainPanel.add(loginButton, gbc);
     }
 
 

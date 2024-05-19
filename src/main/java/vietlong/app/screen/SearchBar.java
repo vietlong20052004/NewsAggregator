@@ -48,7 +48,7 @@ public class SearchBar extends JPanel{
         panel.add(searchLabel, gbc);
 
         searchField = new JTextField();
-        gbc.gridwidth = 12;
+        gbc.gridwidth = 20;
         gbc.gridx = 4;
         gbc.gridy = 0;
         panel.add(searchField, gbc);
@@ -79,9 +79,9 @@ public class SearchBar extends JPanel{
 
         this.searchButton = new JButton("Search");
         searchButton.addMouseListener(new SearchButtonListener());
-        gbc.gridwidth = 4;
-        gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridwidth = 6;
+        gbc.gridx = 5;
+        gbc.gridy = 4;
 
         panel.add(searchButton, gbc);
 
