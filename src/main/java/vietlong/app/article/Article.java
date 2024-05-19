@@ -14,9 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.text.ParseException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Date;
+import java.util.*;
 import java.text.SimpleDateFormat;
 
 import static vietlong.app.search_engine.Preprocessing.tokenize;
@@ -26,15 +24,15 @@ public class Article {
 
     private String url;
     private ArticleType articleType;
-    private String title; 
+    private String title;
     private String content;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date publishedDate;
     private List<String> hashtags;
-    private List<String> author; 
-    private List<String> category; 
+    private List<String> author;
+    private List<String> category;
 
-    public Article(){
+    public Article() {
 
     }
 
@@ -49,16 +47,16 @@ public class Article {
             @JsonProperty("category") List<String> category) throws ParseException {
 
         this.url = url;
-        
+
         this.articleType = ArticleType.fromString(articleType);
         this.title = title;
         this.content = content;
-        this.publishedDate = Article.convertPublishedDateTime(publishedDate) ;
+        this.publishedDate = Article.convertPublishedDateTime(publishedDate);
         this.hashtags = hashtags;
         this.author = author;
         this.category = category;
 
-        
+
     }
 
 
@@ -66,7 +64,6 @@ public class Article {
         return url;
     }
 
-    
 
     public ArticleType getArticleType() {
         return articleType;
@@ -107,7 +104,6 @@ public class Article {
     }
 
 
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -131,21 +127,22 @@ public class Article {
     public void setCategory(List<String> category) {
         this.category = category;
     }
-    
 
-    
-    public static Date convertPublishedDateTime(String publishedDateTime) throws ParseException{
+
+    public static Date convertPublishedDateTime(String publishedDateTime) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         return sdf.parse(publishedDateTime.trim());
     }
 
-    public String convertToFormattedDate(){
+    public String convertToFormattedDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         return sdf.format(this.publishedDate);
     }
 
-    
-    public enum ArticleType{
+
+    public enum ArticleType {
         TWEET,
         NEWS,
         BLOG_POST,
@@ -162,14 +159,14 @@ public class Article {
         }
 
     }
-    
+
     @Override
     public String toString() {
         return "Article{" +
                 "url='" + url + '\'' +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", creationDateTime=" + publishedDate +
+                ", published time=" + publishedDate +
                 ", hashtag=" + hashtags +
                 ", author=" + author +
                 ", category=" + category +
@@ -184,6 +181,20 @@ public class Article {
     public List<String> tokenizeContent() {
         return tokenize(this.content);
     }
-    
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true; // Reference equality
+        if (o == null || getClass() != o.getClass()) return false; // Null and class check
+        Article article = (Article) o; // Cast
+        return Objects.equals(url, article.url) &&
+                Objects.equals(title, article.title) &&
+                Objects.equals(publishedDate, article.publishedDate) &&
+                Objects.equals(author, article.author);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(url, title, publishedDate, author);
+    }
 }

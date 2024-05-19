@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ArticleEditor extends ArticleAdder {
     private Article articleToEdit;
@@ -21,7 +22,7 @@ public class ArticleEditor extends ArticleAdder {
         super(mainApplication, user);
         setTitle("Edit Article");
         articleToEdit = article;
-        this.articles = new ArrayList<>(articles);
+        this.articles = articles;
         initializeComponents();
         loadArticleDetails();
     }
@@ -45,40 +46,36 @@ public class ArticleEditor extends ArticleAdder {
         dateField.setText(articleToEdit.convertToFormattedDate());
         authorField.setText(String.join(",", articleToEdit.getAuthor()));
         hashtagsField.setText(String.join(",", articleToEdit.getHashtags()));
-        typeField.setSelectedItem(articleToEdit.getCategory() != null ? articleToEdit.getCategory() : "");
+        typeField.setSelectedItem(articleToEdit.getArticleType() != null ? articleToEdit.getArticleType() : "");
         contentTextArea.setText(articleToEdit.getContent());
 
     }
     private class SaveButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            articles.remove(articleToEdit);
-            Article article = new Article();
-            article.setUrl(urlField.getText().trim());
-            article.setTitle(titleField.getText().trim());
+            articles = new ArrayList<> (Objects.requireNonNull(ArticleChooser.loadArticles()));
+            articles.remove(articleToEdit); // remove old article
+            articleToEdit.setUrl(urlField.getText().trim());
+            articleToEdit.setTitle(titleField.getText().trim());
             try {
-                article.setArticleType(Article.ArticleType.fromString((String)typeField.getSelectedItem()));
+                articleToEdit.setArticleType(Article.ArticleType.fromString((String)typeField.getSelectedItem()));
             } catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(ArticleEditor.this, "Invalid article type: " + typeField.getSelectedItem());
                 return;
             }
             try {
-                article.setPublishedDate(dateField.getText());
+                articleToEdit.setPublishedDate(dateField.getText());
             } catch (ParseException ex) {
                 JOptionPane.showMessageDialog(ArticleEditor.this, "Invalid date format. Please use yyyy-MM-dd.");
                 return;
             }
-            article.setAuthor(List.of(authorField.getText().trim().split("\\s*,\\s*")));
-            article.setHashtags(List.of(hashtagsField.getText().trim().split("\\s*,\\s*")));
-            article.setContent(contentTextArea.getText().trim());
+            articleToEdit.setAuthor(List.of(authorField.getText().trim().split("\\s*,\\s*")));
+            articleToEdit.setHashtags(List.of(hashtagsField.getText().trim().split("\\s*,\\s*")));
+            articleToEdit.setContent(contentTextArea.getText().trim());
 
             try {
-                // Read existing articles from the file
-                List<Article> articles = JsonArticleWriter.readFromFile("Data", "data_full.json");
 
-                // Add new article to the list
-                articles.add(article);
-
+                articles.add(0, articleToEdit); // add new article at 0 index
                 // Write updated list back to the file
                 JsonArticleWriter.writeToFile(articles, "Data", "data_full.json");
                 JOptionPane.showMessageDialog(ArticleEditor.this, "Article saved successfully!");
@@ -96,6 +93,7 @@ public class ArticleEditor extends ArticleAdder {
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
+                articles = new ArrayList<>(articles);
                 articles.remove(articleToEdit);
                 JsonArticleWriter.writeToFile(articles, "Data", "data_full.json");
                 JOptionPane.showMessageDialog(ArticleEditor.this, "Article deleted successfully!");

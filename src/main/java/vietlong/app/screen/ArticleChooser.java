@@ -4,6 +4,7 @@ package vietlong.app.screen;
 
 import vietlong.app.article.Article;
 import vietlong.app.person.User;
+import vietlong.app.search_engine.SearchTool;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -16,12 +17,15 @@ import java.io.IOException;
 
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static vietlong.app.article.JsonArticleReader.readFromFile;
 
 public class ArticleChooser extends JPanel {
-    private final List<Article> articles;
+    private List<Article> articles;
+    private List<Article> searchResults;
     private int currentPage = 0;
     private final int articlesPerPage = 5;
     private final MainApplication mainApp;
@@ -42,6 +46,7 @@ public class ArticleChooser extends JPanel {
         // Load articles from JSON file
         articles = loadArticles();
 
+
         // Initialize components
         initializeComponents();
 
@@ -53,6 +58,11 @@ public class ArticleChooser extends JPanel {
         BackgroundPanel backgroundPanel = new BackgroundPanel("ImageIcon/background.jpg");
         backgroundPanel.setLayout(null);
         add(backgroundPanel, BorderLayout.CENTER);
+
+        // Add search panel
+        SearchBar searchPanel = new SearchBar(this, articles);
+        add(searchPanel, BorderLayout.NORTH);
+
 
         articlePanel = new JPanel();
         articlePanel.setOpaque(false);
@@ -133,12 +143,12 @@ public class ArticleChooser extends JPanel {
         });
     }
 
-    private List<Article> loadArticles() {
+    public static List<Article> loadArticles() {
         try {
             return readFromFile("Data", "data_full.json");
         } catch (IOException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to load articles: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Failed to load articles: " + e.getMessage());
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -248,5 +258,11 @@ public class ArticleChooser extends JPanel {
 
     public boolean isEditMode() {
         return editMode;
+    }
+
+    public void displaySearchResults(List<Article> searchResults) {
+        this.articles = new ArrayList<>(searchResults);
+        currentPage = 0;
+        updateArticles();
     }
 }

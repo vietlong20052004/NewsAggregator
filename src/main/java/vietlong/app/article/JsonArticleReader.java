@@ -1,7 +1,7 @@
 package vietlong.app.article;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import vietlong.app.utils.FileExistChecker;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class JsonArticleReader {
 
         File file = new File(directoryPath, fileName);
 
-        if (FileExistChecker.checkFileExist(directoryPath, fileName)) {
+        if (file.exists()) {
             System.out.println("File exists in the directory.");
         } else {
             System.out.println("File does not exist in the directory.");

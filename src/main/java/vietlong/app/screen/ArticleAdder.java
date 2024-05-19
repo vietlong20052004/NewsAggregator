@@ -114,7 +114,7 @@ public class ArticleAdder extends JFrame {
                 List<Article> articles = JsonArticleWriter.readFromFile("Data", "data_full.json");
 
                 // Add new article to the list
-                articles.add(article);
+                articles.add(0,article);
 
                 // Write updated list back to the file
                 JsonArticleWriter.writeToFile(articles, "Data", "data_full.json");

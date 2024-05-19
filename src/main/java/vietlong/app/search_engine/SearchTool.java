@@ -1,42 +1,35 @@
 package vietlong.app.search_engine;
 
+
 import vietlong.app.article.Article;
 
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.Arrays;
 
+
 public class SearchTool {
+
     public List<Article> search(List<Article> articles, String keyword, List<String> criteriaList) {
-        return articles.stream()
-                .sorted(Comparator.comparingInt(article -> {
-                    Map<String, Integer> keywordCounts = new HashMap<>();
-                    Arrays.stream(keyword.split(" "))
-                            .forEach(kw -> {
-                                int count = (int) article.tokenizeTitle().stream().filter(token -> token.equals(kw)).count() +
-                                        (int) article.tokenizeContent().stream().filter(token -> token.equals(kw)).count();
-                                keywordCounts.put(kw, count);
-                            });
-                    return -keywordCounts.values().stream().mapToInt(Integer::intValue).sum();
-                }))
+        List<String> keywords = Arrays.asList(keyword.toLowerCase().split(" "));
+        List<Article> copyArticles = new ArrayList<>(articles);
+        return copyArticles.parallelStream()
                 .filter(article -> {
-                    boolean containsAnyKeyword = Arrays.stream(keyword.split(" "))
-                            .anyMatch(kw -> article.tokenizeTitle().contains(kw) || article.tokenizeContent().contains(kw));
-                    return criteriaList.stream().anyMatch(criteria ->
+                    boolean matches = criteriaList.parallelStream().anyMatch(criteria ->
                             switch (criteria.toLowerCase()) {
-                                case "title" -> article.tokenizeTitle().contains(keyword);
-                                case "author" -> article.getAuthor().stream().anyMatch(a -> a.toLowerCase().contains(keyword.toLowerCase()));
-                                case "hashtag" -> article.getHashtags().stream().anyMatch(h -> h.toLowerCase().contains(keyword.toLowerCase()));
-                                case "content" -> containsAnyKeyword;
+                                case "title" -> keywords.parallelStream().anyMatch(kw -> article.tokenizeTitle().contains(kw));
+                                case "author" -> article.getAuthor().parallelStream().anyMatch(a -> keywords.stream().anyMatch(kw -> a.toLowerCase().contains(kw)));
+                                case "hashtag" -> article.getHashtags().parallelStream().anyMatch(h -> keywords.stream().anyMatch(kw -> h.toLowerCase().contains(kw)));
+                                case "content" -> keywords.parallelStream().anyMatch(kw -> article.tokenizeContent().contains(kw));
                                 default -> false;
                             }
                     );
+                    return matches;
                 })
                 .collect(Collectors.toList());
     }
+
 
 
 }
