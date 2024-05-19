@@ -16,7 +16,7 @@ public class LoginScreen extends JPanel{
     private ImageIcon loginImage;
 
     public LoginScreen(MainApplication mainApp){
-        this.mainPanel = new BackgroundPanel("ImageIcon/4.png");
+        this.mainPanel = new BackgroundPanel("ImageIcon/login_background.jpg");
         this.mainApp = mainApp;
         mainApp.add(mainPanel);
         initializeComponents();
